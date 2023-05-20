@@ -393,6 +393,11 @@ public class CopyOnWriteArrayList<E>
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
+    /**
+     * 读取指定下标的元素
+     * @param index 期望获取元素的下标
+     * @return 返回指定下标的元素
+     */
     public E get(int index) {
         return get(getArray(), index);
     }
@@ -431,17 +436,27 @@ public class CopyOnWriteArrayList<E>
      * @param e element to be appended to this list
      * @return {@code true} (as specified by {@link Collection#add})
      */
+    /**
+     * 在数组末尾加入元素
+     * @param e 待插入元素
+     * @return 其实一定会返回 true
+     */
     public boolean add(E e) {
         final ReentrantLock lock = this.lock;
+        // 加锁
         lock.lock();
         try {
             Object[] elements = getArray();
             int len = elements.length;
+            // 复制一个长度 +1 的新数组
             Object[] newElements = Arrays.copyOf(elements, len + 1);
+            // 将新增元素插入新数组末尾
             newElements[len] = e;
+            // 将新数组作为当前使用的数组
             setArray(newElements);
             return true;
         } finally {
+            // 解锁
             lock.unlock();
         }
     }
@@ -452,6 +467,11 @@ public class CopyOnWriteArrayList<E>
      * any subsequent elements to the right (adds one to their indices).
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
+     */
+    /**
+     * 在指定下标位置插入元素
+     * @param index 指定的下标
+     * @param element 待插入元素
      */
     public void add(int index, E element) {
         final ReentrantLock lock = this.lock;

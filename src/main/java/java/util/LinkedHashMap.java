@@ -214,6 +214,10 @@ public class LinkedHashMap<K,V>
      *
      * @serial
      */
+    /**
+     * true 是根据访问顺序排序，即直接实现 LRU ，最后访问的数据会被放到链表末尾
+     * false 是根据插入顺序排序，是默认值
+     */
     final boolean accessOrder;
 
     // internal utilities

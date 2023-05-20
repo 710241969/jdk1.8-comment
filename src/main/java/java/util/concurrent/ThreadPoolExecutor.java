@@ -383,10 +383,34 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
 
     // runState is stored in the high-order bits
+    // 线程池状态
+    /**
+     * 线程池可以接收新的任务和执行已添加的任务。线程池被一旦被创建就是 RUNNING
+     */
     private static final int RUNNING    = -1 << COUNT_BITS;
+    /**
+     * 不接收新任务，但能处理已添加的任务
+     * shutdown() 方法
+     * RUNNING -> SHUTDOWN
+     */
     private static final int SHUTDOWN   =  0 << COUNT_BITS;
+    //
+    /**
+     * 不接收新任务，不处理已添加的任务，并且会中断正在执行的任务
+     * shutdownNow() 方法
+     * (RUNNING or SHUTDOWN) -> STOP
+     */
     private static final int STOP       =  1 << COUNT_BITS;
+    /**
+     * 当所有的任务已终止，记录的”任务数量”为0，线程池会变为TIDYING状态
+     * 当线程池变为TIDYING状态时，会执行钩子函数terminated()
+     * SHUTDOWN -> TIDYING 或者 STOP -> TIDYING
+     */
     private static final int TIDYING    =  2 << COUNT_BITS;
+    /**
+     * 当 TIDYING 状态执行的钩子函数 terminated() 被执行完成之后，线程池彻底终止，就变成TERMINATED状态
+     * TIDYING -> TERMINATED
+     */
     private static final int TERMINATED =  3 << COUNT_BITS;
 
     // Packing and unpacking ctl

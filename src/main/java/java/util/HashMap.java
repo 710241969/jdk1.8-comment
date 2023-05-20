@@ -263,6 +263,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
      */
+    /**
+     * 定义了红黑树退化的临界值，在 resize() 方法执行扩容过程中，如果链表是红黑树，
+     * 会将红黑树进行拆分，如果拆分后节点数量小于等于 6 ，会退化成链表
+     */
     static final int UNTREEIFY_THRESHOLD = 6;
 
     /**
@@ -712,6 +716,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                     if (e.next == null)
                         newTab[e.hash & (newCap - 1)] = e;
                     else if (e instanceof TreeNode)
+                        // 如果当前的节点是红黑树结构，则进行红黑树的拆分，可能会将红黑树退化为链表
                         ((TreeNode<K,V>)e).split(this, newTab, j, oldCap);
                     else { // preserve order
                         Node<K,V> loHead = null, loTail = null;
